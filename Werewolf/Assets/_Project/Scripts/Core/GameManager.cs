@@ -27,6 +27,7 @@ namespace Werewolf.Core
             Instance = this;
             DontDestroyOnLoad(gameObject);
             ServiceLocator.Current.Clear();
+            EventManager.Clear();
         }
 
         private void Start()
