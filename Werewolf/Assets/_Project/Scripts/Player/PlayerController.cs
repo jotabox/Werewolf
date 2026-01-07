@@ -2,6 +2,7 @@ using UnityEngine;
 using Werewolf.Input;
 using Werewolf.Core;
 
+
 namespace Werewolf.Player
 {
     [RequireComponent(typeof(Rigidbody2D))]
@@ -15,7 +16,12 @@ namespace Werewolf.Player
         [SerializeField] private Transform groundCheck;
         [SerializeField] private float groundCheckRadius = 0.2f;
         [SerializeField] private LayerMask groundLayer;
+        private bool hasJumped;
 
+        [Header("Input Buffer")]
+        [SerializeField] private float jumpBufferTime = 0.15f;
+
+        private InputBuffer inputBuffer;
         private Rigidbody2D rb;
         private IInputService input;
         private bool isGrounded;
@@ -28,6 +34,8 @@ namespace Werewolf.Player
         private void Start()
         {
             input = ServiceLocator.Current.Get<IInputService>();
+            inputBuffer = new InputBuffer(jumpBufferTime);
+
 
             if (input == null)
             {
@@ -41,9 +49,23 @@ namespace Werewolf.Player
         {
             CheckGround();
 
-            if (input.JumpPressed && isGrounded)
+            // Registra intenção de pulo (buffer)
+            if (input.JumpPressed)
+            {
+                inputBuffer.Register("Jump");
+            }
+
+            // Reseta estado ao tocar o chão
+            if (isGrounded)
+            {
+                hasJumped = false;
+            }
+
+            // Executa pulo apenas se permitido
+            if (isGrounded && !hasJumped && inputBuffer.Consume("Jump"))
             {
                 Jump();
+                hasJumped = true;
             }
         }
 
