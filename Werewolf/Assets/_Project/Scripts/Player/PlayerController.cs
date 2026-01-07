@@ -36,12 +36,12 @@ namespace Werewolf.Player
 
         private void ReadInput()
         {
-            moveInput = Input.GetAxisRaw("Horizontal");
+            //moveInput = Input.GetAxisRaw("Horizontal");
 
-            if (Input.GetButtonDown("Jump") && isGrounded)
-            {
-                Jump();
-            }
+            //if (Input.GetButtonDown("Jump") && isGrounded)
+            //{
+            //    Jump();
+            //}
         }
 
         private void ApplyMovement()
