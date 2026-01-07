@@ -14,6 +14,8 @@ namespace Werewolf.Input
 
         private void Awake()
         {
+            DontDestroyOnLoad(gameObject);
+
             inputActions = new WerewolfInputActions();
             ServiceLocator.Current.Register<IInputService>(this);
         }
@@ -42,4 +44,4 @@ namespace Werewolf.Input
         }
     }
 }
-    
+        

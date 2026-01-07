@@ -1,4 +1,6 @@
 using UnityEngine;
+using Werewolf.Input;
+using Werewolf.Core;
 
 namespace Werewolf.Player
 {
@@ -15,7 +17,7 @@ namespace Werewolf.Player
         [SerializeField] private LayerMask groundLayer;
 
         private Rigidbody2D rb;
-        private float moveInput;
+        private IInputService input;
         private bool isGrounded;
 
         private void Awake()
@@ -23,10 +25,26 @@ namespace Werewolf.Player
             rb = GetComponent<Rigidbody2D>();
         }
 
+        private void Start()
+        {
+            input = ServiceLocator.Current.Get<IInputService>();
+
+            if (input == null)
+            {
+                Debug.LogError("IInputService not found. Ensure InputManager is initialized before Player.");
+                enabled = false;
+            }
+
+        }
+
         private void Update()
         {
-            ReadInput();
             CheckGround();
+
+            if (input.JumpPressed && isGrounded)
+            {
+                Jump();
+            }
         }
 
         private void FixedUpdate()
@@ -34,19 +52,9 @@ namespace Werewolf.Player
             ApplyMovement();
         }
 
-        private void ReadInput()
-        {
-            //moveInput = Input.GetAxisRaw("Horizontal");
-
-            //if (Input.GetButtonDown("Jump") && isGrounded)
-            //{
-            //    Jump();
-            //}
-        }
-
         private void ApplyMovement()
         {
-            rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+            rb.linearVelocity = new Vector2(input.Move.x * moveSpeed, rb.linearVelocity.y);
         }
 
         private void Jump()
