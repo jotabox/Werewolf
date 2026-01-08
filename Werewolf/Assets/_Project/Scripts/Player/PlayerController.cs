@@ -21,10 +21,15 @@ namespace Werewolf.Player
         [Header("Input Buffer")]
         [SerializeField] private float jumpBufferTime = 0.15f;
 
+        [Header("Coyote Time")]
+        [SerializeField] private float coyoteTime = 0.1f;
+
+
         private InputBuffer inputBuffer;
         private Rigidbody2D rb;
         private IInputService input;
         private bool isGrounded;
+        private float coyoteTimeCounter;
 
         private void Awake()
         {
@@ -58,14 +63,20 @@ namespace Werewolf.Player
             // Reseta estado ao tocar o chão
             if (isGrounded)
             {
+                coyoteTimeCounter = coyoteTime;
                 hasJumped = false;
             }
+            else
+            {
+                coyoteTimeCounter -= Time.deltaTime;
+            }
 
-            // Executa pulo apenas se permitido
-            if (isGrounded && !hasJumped && inputBuffer.Consume("Jump"))
+            // Executa pulo se permitido (ground + coyote time)
+            if (!hasJumped && coyoteTimeCounter > 0f && inputBuffer.Consume("Jump"))
             {
                 Jump();
                 hasJumped = true;
+                coyoteTimeCounter = 0f;
             }
         }
 
