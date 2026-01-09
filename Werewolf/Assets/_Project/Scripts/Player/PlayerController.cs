@@ -1,6 +1,8 @@
 using UnityEngine;
 using Werewolf.Input;
 using Werewolf.Core;
+using Werewolf.Player.States;
+
 
 
 namespace Werewolf.Player
@@ -30,10 +32,13 @@ namespace Werewolf.Player
         private IInputService input;
         private bool isGrounded;
         private float coyoteTimeCounter;
+        public PlayerStateMachine StateMachine { get; private set; }
+
 
         private void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
+            StateMachine = new PlayerStateMachine();
         }
 
         private void Start()

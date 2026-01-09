@@ -689,7 +689,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   jumpBufferTime: 0.15
-  coyoteTime: 0.1
+  coyoteTime: 0.2
 --- !u!61 &1122089020
 BoxCollider2D:
   m_ObjectHideFlags: 0
