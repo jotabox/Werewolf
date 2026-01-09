@@ -1,7 +1,9 @@
 using UnityEngine;
-using Werewolf.Input;
 using Werewolf.Core;
+using Werewolf.Input;
 using Werewolf.Player.States;
+using Werewolf.Player.States.Air;
+using Werewolf.Player.States.Grounded;
 
 
 
@@ -33,6 +35,13 @@ namespace Werewolf.Player
         private bool isGrounded;
         private float coyoteTimeCounter;
         public PlayerStateMachine StateMachine { get; private set; }
+        public bool IsGrounded => isGrounded;
+        public Vector2 MoveInput => input.Move;
+        public IdleState IdleState { get; private set; }
+        public RunState RunState { get; private set; }
+        public JumpState JumpState { get; private set; }
+        public FallState FallState { get; private set; }
+
 
 
         private void Awake()
@@ -53,10 +62,21 @@ namespace Werewolf.Player
                 enabled = false;
             }
 
+            IdleState = new IdleState(this, StateMachine);
+            RunState = new RunState(this, StateMachine);
+            JumpState = new JumpState(this, StateMachine);
+            FallState = new FallState(this, StateMachine);
+
+            StateMachine.Initialize(IdleState);
+
+
         }
 
         private void Update()
         {
+            StateMachine.CurrentState?.HandleInput();
+            StateMachine.CurrentState?.LogicUpdate();
+
             CheckGround();
 
             // Registra intenção de pulo (buffer)
@@ -87,6 +107,7 @@ namespace Werewolf.Player
 
         private void FixedUpdate()
         {
+            StateMachine.CurrentState?.PhysicsUpdate();
             ApplyMovement();
         }
 
@@ -108,5 +129,16 @@ namespace Werewolf.Player
                 groundLayer
             );
         }
+
+        public void SetHorizontalVelocity(float value)
+        {
+            rb.linearVelocity = new Vector2(value, rb.linearVelocity.y);
+        }
+
+        public bool ConsumeJumpInput()
+        {
+            return inputBuffer.Consume("Jump");
+        }
+
     }
 }
