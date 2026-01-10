@@ -15,10 +15,6 @@ namespace Werewolf.Player.States.Grounded
         {
             base.LogicUpdate();
 
-            if (!player.IsGrounded)
-            {
-                stateMachine.ChangeState(player.FallState);
-            }
         }
     }
 }

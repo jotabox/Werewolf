@@ -74,10 +74,15 @@ namespace Werewolf.Player
 
         private void Update()
         {
+            CheckGround();
+
+            if (!isGrounded && StateMachine.CurrentState is GroundedState)
+            {
+                StateMachine.ChangeState(FallState);
+            }
+
             StateMachine.CurrentState?.HandleInput();
             StateMachine.CurrentState?.LogicUpdate();
-
-            CheckGround();
 
             // Registra intenção de pulo (buffer)
             if (input.JumpPressed)
@@ -103,18 +108,15 @@ namespace Werewolf.Player
                 hasJumped = true;
                 coyoteTimeCounter = 0f;
             }
+
         }
 
         private void FixedUpdate()
         {
+            Debug.Log("FixedUpdate State = " + StateMachine.CurrentState.GetType().Name);
             StateMachine.CurrentState?.PhysicsUpdate();
-            ApplyMovement();
         }
 
-        private void ApplyMovement()
-        {
-            rb.linearVelocity = new Vector2(input.Move.x * moveSpeed, rb.linearVelocity.y);
-        }
 
         private void Jump()
         {
@@ -130,9 +132,10 @@ namespace Werewolf.Player
             );
         }
 
-        public void SetHorizontalVelocity(float value)
+        public void SetMovement(float direction)
         {
-            rb.linearVelocity = new Vector2(value, rb.linearVelocity.y);
+            Debug.Log("Applying velocity X = " + direction * moveSpeed);
+            rb.linearVelocity = new Vector2(direction * moveSpeed, rb.linearVelocity.y);
         }
 
         public bool ConsumeJumpInput()
@@ -140,5 +143,12 @@ namespace Werewolf.Player
             return inputBuffer.Consume("Jump");
         }
 
+        private void OnDrawGizmosSelected()
+        {
+            if (groundCheck == null) return;
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        }
     }
 }

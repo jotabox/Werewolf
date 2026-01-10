@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Werewolf.Player.States
 {
     public class PlayerStateMachine
@@ -12,6 +14,7 @@ namespace Werewolf.Player.States
 
         public void ChangeState(PlayerState newState)
         {
+            Debug.Log($"FSM: {CurrentState?.GetType().Name} -> {newState?.GetType().Name}");
             CurrentState.Exit();
             CurrentState = newState;
             CurrentState.Enter();

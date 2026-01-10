@@ -1,3 +1,4 @@
+using UnityEngine;
 using Werewolf.Player.States.Grounded;
 
 namespace Werewolf.Player.States.Grounded
@@ -14,16 +15,18 @@ namespace Werewolf.Player.States.Grounded
         public override void Enter()
         {
             base.Enter();
-            player.SetHorizontalVelocity(0f);
+            player.SetMovement(0f);
         }
 
         public override void LogicUpdate()
         {
             base.LogicUpdate();
 
+
             if (player.MoveInput.x != 0)
             {
                 stateMachine.ChangeState(player.RunState);
+                return;
             }
 
             if (player.ConsumeJumpInput())
