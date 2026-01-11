@@ -33,7 +33,7 @@ namespace Werewolf.Player.States.Grounded
 
         public override void PhysicsUpdate()
         {
-            Debug.Log("RUN STATE PHYSICS");
+            //Debug.Log("RUN STATE PHYSICS");
 
             base.PhysicsUpdate();
 

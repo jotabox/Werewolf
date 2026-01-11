@@ -41,6 +41,8 @@ namespace Werewolf.Player
         public RunState RunState { get; private set; }
         public JumpState JumpState { get; private set; }
         public FallState FallState { get; private set; }
+        public float RigidbodyVelocityY => rb.linearVelocity.y;
+
 
 
 
@@ -84,41 +86,41 @@ namespace Werewolf.Player
             StateMachine.CurrentState?.HandleInput();
             StateMachine.CurrentState?.LogicUpdate();
 
-            // Registra intenção de pulo (buffer)
+            //// Registra intenção de pulo (buffer)
             if (input.JumpPressed)
             {
                 inputBuffer.Register("Jump");
             }
 
-            // Reseta estado ao tocar o chão
-            if (isGrounded)
-            {
-                coyoteTimeCounter = coyoteTime;
-                hasJumped = false;
-            }
-            else
-            {
-                coyoteTimeCounter -= Time.deltaTime;
-            }
+            //// Reseta estado ao tocar o chão
+            //if (isGrounded)
+            //{
+            //    coyoteTimeCounter = coyoteTime;
+            //    hasJumped = false;
+            //}
+            //else
+            //{
+            //    coyoteTimeCounter -= Time.deltaTime;
+            //}
 
-            // Executa pulo se permitido (ground + coyote time)
-            if (!hasJumped && coyoteTimeCounter > 0f && inputBuffer.Consume("Jump"))
-            {
-                Jump();
-                hasJumped = true;
-                coyoteTimeCounter = 0f;
-            }
+            //// Executa pulo se permitido (ground + coyote time)
+            //if (!hasJumped && coyoteTimeCounter > 0f && inputBuffer.Consume("Jump"))
+            //{
+            //    Jump();
+            //    hasJumped = true;
+            //    coyoteTimeCounter = 0f;
+            //}
 
         }
 
         private void FixedUpdate()
         {
-            Debug.Log("FixedUpdate State = " + StateMachine.CurrentState.GetType().Name);
+            //Debug.Log("FixedUpdate State = " + StateMachine.CurrentState.GetType().Name);
             StateMachine.CurrentState?.PhysicsUpdate();
         }
 
 
-        private void Jump()
+        public void Jump()
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
@@ -134,7 +136,7 @@ namespace Werewolf.Player
 
         public void SetMovement(float direction)
         {
-            Debug.Log("Applying velocity X = " + direction * moveSpeed);
+            //Debug.Log("Applying velocity X = " + direction * moveSpeed);
             rb.linearVelocity = new Vector2(direction * moveSpeed, rb.linearVelocity.y);
         }
 
